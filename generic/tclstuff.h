@@ -54,7 +54,7 @@
 
 #define TEST_OK_BREAK(var, cmd) if (TCL_OK != (var=(cmd))) break;
 
-static inline void release_tclobj(Tcl_Obj** obj)
+static INLINE void release_tclobj(Tcl_Obj** obj)
 {
 	if (*obj) {
 		Tcl_DecrRefCount(*obj);
@@ -67,7 +67,7 @@ static inline void release_tclobj(Tcl_Obj** obj)
 	release_tclobj(&target); \
 	if (replacement) Tcl_IncrRefCount(target = replacement); \
 }
-static inline void replace_tclobj(Tcl_Obj** target, Tcl_Obj* replacement)
+static INLINE void replace_tclobj(Tcl_Obj** target, Tcl_Obj* replacement)
 {
 	if (*target) {
 		Tcl_DecrRefCount(*target);

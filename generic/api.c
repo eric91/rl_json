@@ -261,7 +261,7 @@ finally:
 }
 
 //}}}
-int JSON_SetJArrayObj(Tcl_Interp* interp, Tcl_Obj* obj, const int objc, Tcl_Obj* objv[]) //{{{
+int JSON_SetJArrayObj(Tcl_Interp* interp, Tcl_Obj* obj, int objc, Tcl_Obj* objv[]) //{{{
 {
 	enum json_types	type;
 	Tcl_ObjIntRep*	ir = NULL;

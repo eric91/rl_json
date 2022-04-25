@@ -1,6 +1,10 @@
 #include "rl_jsonInt.h"
 #include "parser.h"
 
+#if defined(_MSC_VER) && _MSC_VER < 1900
+#  define snprintf _snprintf
+#endif
+
 enum char_advance_status {
 	CHAR_ADVANCE_OK,
 	CHAR_ADVANCE_UNESCAPED_NULL

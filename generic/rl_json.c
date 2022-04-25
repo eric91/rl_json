@@ -1922,11 +1922,13 @@ free_search:
 int build_template_actions(Tcl_Interp* interp, Tcl_Obj* template, Tcl_Obj** actions) //{{{
 {
 	int					retcode=TCL_OK;
-	struct template_cx	cx = {	// Unspecified members are initialized to 0
-		.interp		= interp,
-		.l			= Tcl_GetAssocData(interp, "rl_json", NULL),
-		.slots_used	= 1	// slot 0 is the scratch space, where completed targets go when popped
-	};
+	struct template_cx	cx;
+
+    cx.interp		= interp;
+	cx.l			= Tcl_GetAssocData(interp, "rl_json", NULL);
+	cx.slots_used	= 1;	// slot 0 is the scratch space, where completed targets go when popped
+    cx.map = 0;
+    cx.actions = 0;
 
 	release_tclobj(actions);
 
@@ -2007,7 +2009,7 @@ int lookup_type(Tcl_Interp* interp, Tcl_Obj* typeobj, int* type) //{{{
 }
 
 //}}}
-static inline void fill_slot(Tcl_Obj** slots, int slot, Tcl_Obj* value) //{{{
+static INLINE void fill_slot(Tcl_Obj** slots, int slot, Tcl_Obj* value) //{{{
 {
 	replace_tclobj(&slots[slot], value);
 }
@@ -2671,12 +2673,12 @@ static int jsonUnset(ClientData cdata, Tcl_Interp* interp, int objc, Tcl_Obj *co
 //}}}
 static int jsonNew(ClientData cdata, Tcl_Interp* interp, int objc, Tcl_Obj *const objv[]) //{{{
 {
+	Tcl_Obj*	res = NULL;
+
 	if (objc < 2) {
 		Tcl_WrongNumArgs(interp, 1, objv, "type ?val?");
 		return TCL_ERROR;
 	}
-
-	Tcl_Obj*	res = NULL;
 
 	TEST_OK(new_json_value_from_list(interp, objc-1, objv+1, &res));
 	Tcl_SetObjResult(interp, res);
@@ -2770,7 +2772,7 @@ static int jsonObject(ClientData cdata, Tcl_Interp* interp, int objc, Tcl_Obj *c
 //}}}
 static int jsonArray(ClientData cdata, Tcl_Interp* interp, int objc, Tcl_Obj *const objv[]) //{{{
 {
-	int			i, ac, retval = TCL_OK;;
+	int			i, ac, retval = TCL_OK;
 	Tcl_Obj**	av;
 	Tcl_Obj*	elem = NULL;
 	Tcl_Obj*	val = NULL;
@@ -3009,7 +3011,7 @@ static int jsonValid(ClientData cdata, Tcl_Interp* interp, int objc, Tcl_Obj *co
 {
 	struct interp_cx*	l = (struct interp_cx*)cdata;
 	int					i, valid, retval=TCL_OK;
-	struct parse_error	details = {};
+	struct parse_error	details = {0,0,0};
 	Tcl_Obj*			detailsvar = NULL;
 	enum extensions	extensions = EXT_COMMENTS;		// By default, use the default set of extensions we accept
 	static const char *options[] = {
@@ -3508,6 +3510,7 @@ void free_interp_cx(ClientData cdata, Tcl_Interp* interp) //{{{
 }
 
 //}}}
+#ifndef _MSC_VER
 static int checkmem(ClientData cdata, Tcl_Interp* interp, int objc, Tcl_Obj *const objv[]) //{{{
 {
 	int					retcode = TCL_OK;
@@ -3598,6 +3601,7 @@ finally:
 }
 
 //}}}
+#endif
 
 #ifdef __cplusplus
 extern "C" {
@@ -3856,7 +3860,9 @@ DLLEXPORT int Rl_json_Init(Tcl_Interp* interp) //{{{
 		Tcl_NRCreateCommand(interp, "::rl_json::json", jsonObj, jsonNRObj, l, NULL);
 #endif
 
+#ifndef _MSC_VER
 		Tcl_CreateObjCommand(interp, NS "::checkmem", checkmem, l, NULL);
+#endif
 	}
 
 #ifdef USE_RL_JSON_STUBS
