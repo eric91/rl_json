@@ -2556,8 +2556,9 @@ static int jsonGet(ClientData cdata, Tcl_Interp* interp, int objc, Tcl_Obj *cons
 		int	optidx;
 
 		enum json_types	type = JSON_GetJSONType(objv[argbase]);
+		const char*	str;
 		if (type != JSON_UNDEF) break;		// Arg is already a JSON value, stop consuming options
-		const char*	str = Tcl_GetString(objv[argbase]);		// If it's not a native json value we will need this string rep to parse for the next step, so potientially regenerating the stringrep here isn't a concern
+		str = Tcl_GetString(objv[argbase]);		// If it's not a native json value we will need this string rep to parse for the next step, so potientially regenerating the stringrep here isn't a concern
 		if (str[0] != '-') break;			// Not an option
 		TEST_OK_LABEL(finally, code, Tcl_GetIndexFromObj(interp, objv[argbase], opts, "option", TCL_EXACT, &optidx));
 
@@ -2652,8 +2653,9 @@ static int jsonExtract(ClientData cdata, Tcl_Interp* interp, int objc, Tcl_Obj *
 		int	optidx;
 
 		enum json_types	type = JSON_GetJSONType(objv[argbase]);
+		const char*	str;
 		if (type != JSON_UNDEF) break;		// Arg is already a JSON value, stop consuming options
-		const char*	str = Tcl_GetString(objv[argbase]);		// If it's not a native json value we will need this string rep to parse for the next step, so potientially regenerating the stringrep here isn't a concern
+		str = Tcl_GetString(objv[argbase]);		// If it's not a native json value we will need this string rep to parse for the next step, so potientially regenerating the stringrep here isn't a concern
 		if (str[0] != '-') break;			// Not an option
 		TEST_OK_LABEL(finally, code, Tcl_GetIndexFromObj(interp, objv[argbase], opts, "option", TCL_EXACT, &optidx));
 
@@ -3134,8 +3136,9 @@ static int jsonPretty(ClientData cdata, Tcl_Interp* interp, int objc, Tcl_Obj *c
 		int	optidx;
 
 		enum json_types	type = JSON_GetJSONType(objv[argbase]);
+		const char*	str;
 		if (type != JSON_UNDEF) break;		// Arg is already a JSON value, stop consuming options
-		const char*	str = Tcl_GetString(objv[argbase]);		// If it's not a native json value we will need this string rep to parse for the next step, so potientially regenerating the stringrep here isn't a concern
+		str = Tcl_GetString(objv[argbase]);		// If it's not a native json value we will need this string rep to parse for the next step, so potientially regenerating the stringrep here isn't a concern
 		if (str[0] != '-') break;			// Not an option
 		TEST_OK_LABEL(finally, code, Tcl_GetIndexFromObj(interp, objv[argbase], opts, "option", TCL_EXACT, &optidx));
 
@@ -3652,8 +3655,7 @@ static int jsonNRObj(ClientData cdata, Tcl_Interp* interp, int objc, Tcl_Obj *co
 
 				TEST_OK(Tcl_GetIndexFromObjStruct(interp, objv[2], tstr, sizeof(struct teststring), "key", TCL_EXACT, &idx));
 				if (!tstr[idx].len) tstr[idx].len = strlen(tstr[idx].str);
-				Tcl_Obj*	newstr = Tcl_NewStringObj(tstr[idx].str, tstr[idx].len);
-				Tcl_SetObjResult(interp, newstr);
+				Tcl_SetObjResult(interp, Tcl_NewStringObj(tstr[idx].str, tstr[idx].len));
 			}
 			break;
 

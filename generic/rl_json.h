@@ -8,6 +8,10 @@
 #define TCL_STORAGE_CLASS DLLEXPORT
 #endif /* BUILD_rl_json */
 
+#ifdef _MSC_VER
+#define _Pragma(s)
+#endif
+
 enum json_types {		// Order must be preserved
 	JSON_UNDEF = 0,
 	JSON_OBJECT,

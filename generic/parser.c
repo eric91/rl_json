@@ -368,8 +368,7 @@ append_mapped:				Tcl_AppendToObj(out, &mapped, 1);		// Weird, but arranged this
 									acc = 0xFFFD;
 								}
 								//const unsigned char* utfend = output_utf8(acc, utfbuf);
-								const int len = Tcl_UniCharToUtf(acc, utfbuf);
-								Tcl_AppendToObj(out, utfbuf, len);
+								Tcl_AppendToObj(out, utfbuf, Tcl_UniCharToUtf(acc, utfbuf));
 							}
 							break;
 
