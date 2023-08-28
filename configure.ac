@@ -19,15 +19,13 @@ dnl	to configure the system for the local environment.
 # so that we create the export library with the dll.
 #-----------------------------------------------------------------------
 
-AC_INIT([rl_json], [0.11.1])
+AC_INIT([rl_json],[0.12.2])
 
 #--------------------------------------------------------------------
 # Call TEA_INIT as the first TEA_ macro to set up initial vars.
 # This will define a ${TEA_PLATFORM} variable == "unix" or "windows"
 # as well as PKG_LIB_FILE and PKG_STUB_LIB_FILE.
 #--------------------------------------------------------------------
-
-CHECK_DEBUG
 
 TEA_INIT()
 
@@ -66,6 +64,8 @@ TEA_SETUP_COMPILER
 # Check for feature toggles
 ENABLE_ENSEMBLE
 ENABLE_DEDUP
+ENABLE_DEBUG
+ENABLE_UNLOAD
 
 #-----------------------------------------------------------------------
 # __CHANGE__
@@ -152,6 +152,7 @@ TEA_CONFIG_CFLAGS
 TIP445
 AC_CHECK_FUNCS_ONCE([ffsll])
 AX_GCC_BUILTIN(__builtin_ffsll)
+TEABASE_INIT()
 
 #--------------------------------------------------------------------
 # Set the default compiler switches based on the --enable-symbols option.
@@ -195,11 +196,11 @@ TEA_PROG_TCLSH
 # substituting the AC variables in. Include these here.
 #--------------------------------------------------------------------
 
-AC_CONFIG_FILES([Makefile pkgIndex.tcl])
+AC_CONFIG_FILES([Makefile teabase/Makefile pkgIndex.tcl])
 
 #--------------------------------------------------------------------
 # Finally, substitute all of the various values into the files
 # specified with AC_CONFIG_FILES.
 #--------------------------------------------------------------------
 
-AC_OUTPUT()
+AC_OUTPUT

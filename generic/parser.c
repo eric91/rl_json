@@ -258,7 +258,7 @@ int value_type(struct interp_cx* l, const unsigned char* doc, const unsigned cha
 	Tcl_Obj*				out = NULL;
 
 	if (val)
-		release_tclobj(val);
+		replace_tclobj(val, NULL);
 
 	if (unlikely(p >= e)) goto err;
 
@@ -324,7 +324,8 @@ append_mapped:				Tcl_AppendToObj(out, &mapped, 1);		// Weird, but arranged this
 
 						case 'u':
 							{
-								Tcl_UniChar	acc=0;
+								Tcl_UniChar	acc = 0;
+								char		utfbuf[6];
 								int			i=4, digit;
 
 								if (unlikely(e-p-2 < i)) {	// -2 is for the "u" and the close quote
@@ -366,7 +367,9 @@ append_mapped:				Tcl_AppendToObj(out, &mapped, 1);		// Weird, but arranged this
 									// U+FFFD in accordance with Unicode recommendations
 									acc = 0xFFFD;
 								}
-								Tcl_AppendUnicodeToObj(out, &acc, 1);
+								//const unsigned char* utfend = output_utf8(acc, utfbuf);
+								const int len = Tcl_UniCharToUtf(acc, utfbuf);
+								Tcl_AppendToObj(out, utfbuf, len);
 							}
 							break;
 

@@ -1,0 +1,12 @@
+[submodule "tclconfig"]
+	path = tclconfig
+	url = https://github.com/tcltk/tclconfig
+	shallow = true
+[submodule "tests/JSONTestSuite"]
+	path = tests/JSONTestSuite
+	url = https://github.com/nst/JSONTestSuite
+	update = none
+	shallow = true
+[submodule "teabase"]
+	path = teabase
+	url = https://github.com/cyanogilvie/teabase

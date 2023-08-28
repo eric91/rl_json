@@ -196,6 +196,7 @@ struct interp_cx {
 
 void append_to_cx(struct parse_context *cx, Tcl_Obj *val);
 int serialize(Tcl_Interp* interp, struct serialize_context* scx, Tcl_Obj* obj);
+void release_instances(void);
 int init_types(Tcl_Interp* interp);
 Tcl_Obj* new_stringobj_dedup(struct interp_cx *l, const char *bytes, int length);
 int lookup_type(Tcl_Interp* interp, Tcl_Obj* typeobj, int* type);
@@ -233,19 +234,19 @@ Tcl_Obj* JSON_NewJvalObj(enum json_types type, Tcl_Obj* val);
 #endif
 
 int JSON_SetIntRep(Tcl_Obj* target, enum json_types type, Tcl_Obj* replacement);
-int JSON_GetIntrepFromObj(Tcl_Interp* interp, Tcl_Obj* obj, enum json_types* type, Tcl_ObjIntRep** ir);
+int JSON_GetIntrepFromObj(Tcl_Interp* interp, Tcl_Obj* obj, enum json_types* type, Tcl_ObjInternalRep** ir);
 int JSON_GetJvalFromObj(Tcl_Interp *interp, Tcl_Obj *obj, enum json_types *type, Tcl_Obj **val);
-int JSON_IsJSON(Tcl_Obj* obj, enum json_types* type, Tcl_ObjIntRep** ir);
+int JSON_IsJSON(Tcl_Obj* obj, enum json_types* type, Tcl_ObjInternalRep** ir);
 int type_is_dynamic(const enum json_types type);
 int force_json_number(Tcl_Interp* interp, struct interp_cx* l, Tcl_Obj* obj, Tcl_Obj** forced);
 Tcl_Obj* as_json(Tcl_Interp* interp, Tcl_Obj* from);
 const char* get_dyn_prefix(enum json_types type);
 const char* get_type_name(enum json_types type);
-Tcl_Obj* get_unshared_val(Tcl_ObjIntRep* ir);
+Tcl_Obj* get_unshared_val(Tcl_ObjInternalRep* ir);
 int apply_template_actions(Tcl_Interp* interp, Tcl_Obj* template, Tcl_Obj* actions, Tcl_Obj* dict, Tcl_Obj** res);
 int build_template_actions(Tcl_Interp* interp, Tcl_Obj* template, Tcl_Obj** actions);
 int convert_to_tcl(Tcl_Interp* interp, Tcl_Obj* obj, Tcl_Obj** out);
-int resolve_path(Tcl_Interp* interp, Tcl_Obj* src, Tcl_Obj *const pathv[], int pathc, Tcl_Obj** target, const int exists, const int modifiers);
+int resolve_path(Tcl_Interp* interp, Tcl_Obj* src, Tcl_Obj *const pathv[], int pathc, Tcl_Obj** target, const int exists, const int modifiers, Tcl_Obj* def);
 int json_pretty(Tcl_Interp* interp, Tcl_Obj* json, Tcl_Obj* indent, Tcl_Obj* pad, Tcl_DString* ds);
 
 #define TEMPLATE_TYPE(s, len, out) \
