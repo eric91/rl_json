@@ -1291,6 +1291,8 @@ int json_pretty(Tcl_Interp* interp, Tcl_Obj* json, Tcl_Obj* indent, Tcl_Obj* pad
 				Tcl_DictSearch	search;
 				Tcl_Obj*		k;
 				Tcl_Obj*		v;
+				Tcl_Obj*		subval;
+				enum json_types	subtype;
 				const char*		key_pad_buf = "                    ";	// Must be at least 20 chars long (max cap below)
 
 				TEST_OK_LABEL(finally, retval, Tcl_DictObjSize(interp, val, &size));
@@ -1302,6 +1304,15 @@ int json_pretty(Tcl_Interp* interp, Tcl_Obj* json, Tcl_Obj* indent, Tcl_Obj* pad
 				TEST_OK_LABEL(finally, retval, Tcl_DictObjFirst(interp, val, &search, &k, &v, &done));
 
 				for (; !done; Tcl_DictObjNext(&search, &k, &v, &done)) {
+					if (JSON_GetJvalFromObj(interp, v, &subtype, &subval) != TCL_OK) {
+						Tcl_DictObjDone(&search);
+						retval = TCL_ERROR;
+						goto finally;
+					}
+					if (subtype == JSON_OBJECT || subtype == JSON_ARRAY) {
+						max = 0;
+						break;
+					}
 					Tcl_GetStringFromObj(k, &k_len);
 					if (k_len <= 20 && k_len > max)
 						max = k_len;
